@@ -1,10 +1,16 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 
 import { Menu as MenuComponent } from "./styles";
 
-import { isLogged } from "../../services/auth";
 
 const Menu = () => {
+  const [isLogged, setIsLogged] = useState(false)
+
+  useEffect(() => {
+    const verifyToken = () => localStorage.getItem("token")
+    return setIsLogged(verifyToken)
+  },[])
+
   return (
     <MenuComponent>
       <ul>
@@ -14,21 +20,8 @@ const Menu = () => {
         <li>
           <a href='/rastreio'>Rastreio</a>
         </li>
-        {!!isLogged() ? (
-          <li>
-            <a href='/dashboard'>
-              {/* <img src='/login.png' alt='iconLogin' /> */}
-              DASHBOARD
-            </a>
-          </li>
-        ) : (
-          <li>
-            <a href='/login'>
-              {/* <img src='/login.png' alt='iconLogin' /> */}
-              LOGIN
-            </a>
-          </li>
-        )}
+        {isLogged && <li><a href="/dashboard">Dashboard</a></li>}
+        {!isLogged && <li><a href="/Login">Login</a></li>}
       </ul>
     </MenuComponent>
   );
