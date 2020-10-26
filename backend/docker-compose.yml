@@ -1,0 +1,12 @@
+version: "3.5"
+
+services:
+  database:
+    container_name: postgres_api
+    image: postgres:13
+    environment:
+      POSTGRES_DB: api
+      POSTGRES_USER: geek
+      POSTGRES_PASSWORD: 123456
+    ports:
+      - 5432:5432
