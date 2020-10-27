@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
+import { useHistory } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import { Form } from "@unform/web";
 import axios from "axios";
@@ -14,15 +15,26 @@ import {
 import Input from "../../components/Input";
 
 
-const Login = props => {
-
+const Login = () => {
+  const [loading, setLoading] = useState(false)
+  const history = useHistory();
  const handleSubmit = (data) => {
     axios.post('/auth', data).then(res => {
-      return(
-        localStorage.setItem('token', res.data.token),
-        localStorage.setItem('user', JSON.stringify(res.data.user)),
-        props.history.push('/dashboard')
-    )})
+        return(
+          localStorage.setItem('token', res.data.token),
+          localStorage.setItem('user', JSON.stringify(res.data.user)),
+          function redirect(){
+            setTimeout(() => {
+              history.push('/dashboard')
+              setLoading(!loading)
+            },1000)
+          }(),
+          function clear(redirect){
+            clearTimeout(redirect)
+            setLoading(!loading)
+          }
+        )
+      })
   }
 
   return (
@@ -41,9 +53,9 @@ const Login = props => {
           </Typography>
           <WrapperForm>
             <Form  onSubmit={handleSubmit}>
-              <Input name='email' />
-              <Input type='password' name='password' />
-              <button type='submit'>Entrar</button>
+              <Input name='email' placeholder="Email" />
+              <Input type='password' name='password' placeholder="Senha" />
+              <button type='submit'>{loading ? 'Carregando' : 'Entrar'}</button>
             </Form>
           </WrapperForm>
         </Box>
